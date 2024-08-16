@@ -146,7 +146,7 @@ class CodeExecution(Tool):
         PrintStyle(font_color="blue", padding=True).print("Attempting to summarize output...")
 
         # Capture the last 2000 characters
-        summarized_output = full_output[-2000:].strip()
+        summarized_output = full_output[-10000:].strip()
 
         # Check if summarized output is not empty and log
         if summarized_output:
