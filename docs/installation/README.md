@@ -118,7 +118,13 @@ This might take some time. If you get any errors regarding version conflicts and
 <img src="image-19.png" alt="conda reqs" height="200"/>
 <br><br>
 
-## 5. Configure Agent Zero
+6. Install Playwright browsers. After installing the requirements, you need to install the necessary browsers for Playwright to function correctly. Run the following command:
+~~~
+playwright install
+~~~
+This will install the required browsers for Playwright to use in web scraping and automation tasks.
+
+## 6. Configure Agent Zero
 - Now we can configure Agent Zero - select models, settings, API Keys etc.
 - I will leave the default configuration using OpenAI API and I will just provide my OpenAI API key in the **.env** file.
 
