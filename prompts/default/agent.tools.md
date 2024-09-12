@@ -63,24 +63,25 @@ Always verify memory by online.
 ~~~
 
 ### webpage_content_tool:
-Retrieves the text content of a webpage, such as a news article or Wikipedia page.
-Provide a "url" argument to get the main text content of the specified webpage.
-This tool is useful for gathering information from online sources.
-Always provide a full, valid URL including the protocol (http:// or https://).
-
+Fetch and extract specific information from a web page.
+Provide "url" argument with a valid URL (including http:// or https://).
+Use "queries" argument to specify the information you want to extract (required).
+Returns only the specific information requested in the queries.
+Use specific, focused queries for better results.
 **Example usage**:
-```json
+~~~json
 {
     "thoughts": [
         "I need to gather information from a specific webpage...",
-        "I will use the webpage_content_tool to fetch the content...",
+        "I will use webpage_content_tool to extract targeted data...",
     ],
     "tool_name": "webpage_content_tool",
     "tool_args": {
-        "url": "https://en.wikipedia.org/wiki/Artificial_intelligence",
+        "url": "https://www.artificialintelligence-news.com/",
+        "queries": "Latest AI breakthroughs, AI applications in healthcare, Recent AI ethics discussions"
     }
 }
-```
+~~~
 
 ### memory_tool:
 Manage long term memories. Allowed arguments are "query", "memorize", "forget" and "delete".
