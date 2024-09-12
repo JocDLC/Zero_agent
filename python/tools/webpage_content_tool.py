@@ -1,42 +1,30 @@
-import requests
-from bs4 import BeautifulSoup
-from urllib.parse import urlparse
-from newspaper import Article
 from python.helpers.tool import Tool, Response
-from python.helpers.errors import handle_error
-
+from python.helpers.perplex_scraper import Perplex
+from python.helpers.url_scraper import fetch_page_content
 
 class WebpageContentTool(Tool):
-    async def execute(self, url="", **kwargs):
-        if not url:
-            return Response(message="Error: No URL provided.", break_loop=False)
-
+    async def execute(self, **kwargs):
         try:
-            # Validate URL
-            parsed_url = urlparse(url)
-            if not all([parsed_url.scheme, parsed_url.netloc]):
-                return Response(message="Error: Invalid URL format.", break_loop=False)
+            target_url = kwargs.get('url')
+            search_queries = kwargs.get('queries')
 
-            # Fetch webpage content
-            response = requests.get(url, timeout=10)
-            response.raise_for_status()
+            if not target_url or not search_queries:
+                return self.create_error_response("Missing URL or search queries.")
 
-            # Use newspaper3k for article extraction
-            article = Article(url)
-            article.download()
-            article.parse()
+            page_content = await fetch_page_content(url=target_url, max_retries=2, headless=False)
+            
+            if page_content.startswith("ERROR:"):
+                return self.create_error_response(f"Failed to fetch page content: {page_content}")
 
-            # If it's not an article, fall back to BeautifulSoup
-            if not article.text:
-                soup = BeautifulSoup(response.content, 'html.parser')
-                text_content = ' '.join(soup.stripped_strings)
-            else:
-                text_content = article.text
+            perplex = Perplex(agent=self.agent)
+            processed_content = await perplex.scraper(queries=search_queries, content=page_content)
 
-            return Response(message=f"Webpage content:\n\n{text_content}", break_loop=False)
+            formatted_content = self.agent.read_prompt("tool.webpage.response.md", scraped_data=processed_content)
+            return Response(message=formatted_content, break_loop=False)
 
-        except requests.RequestException as e:
-            return Response(message=f"Error fetching webpage: {str(e)}", break_loop=False)
         except Exception as e:
-            handle_error(e)
-            return Response(message=f"An error occurred: {str(e)}", break_loop=False)
+            return self.create_error_response(f"An error occurred: {str(e)}")
+
+    def create_error_response(self, error_message):
+        formatted_error = self.agent.read_prompt("fw.error.md", error=error_message)
+        return Response(message=formatted_error, break_loop=False)
