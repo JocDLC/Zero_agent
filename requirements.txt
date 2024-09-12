@@ -12,11 +12,9 @@ docker==7.1.0
 paramiko==3.4.0
 duckduckgo_search==6.1.12
 inputimeout==1.0.4
-newspaper3k==0.2.8
-beautifulsoup4==4.12.3
-lxml_html_clean==0.2.0
 pynput==1.7.7
 pypdf==4.3.1
 Flask[async]==3.0.3
 Flask-BasicAuth==0.2.0
 faiss-cpu==1.8.0.post1
+playwright==1.46.0
